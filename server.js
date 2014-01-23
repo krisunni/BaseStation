@@ -21,18 +21,31 @@ exports.start = start;
 
 var SerialPort = require("serialport").SerialPort
 
-var serialPort = new SerialPort("/dev/ttyACM0",{baudrate: 9600}, false); // this is the openImmediately flag [default is true]
-
-    serialPort.open(function () 
-    {
-      console.log('open');
-      serialPort.on('data', function(data) {
+var serialPort = new SerialPort("/dev/ttyACM0", {
+    baudrate: 9600
+}, false); // this is the openImmediately flag [default is true]
+var receivedData = "";
+var sendData = "";
+serialPort.open(function() {
+    console.log('open');
+    
+    /*  serialPort.on('data', function(data) {
       console.log('data received: ' + data);
+    });*/
+    
+    serialPort.on('data', function(data) {
+       //console.log('data received: ' + data);
+        receivedData += data.toString();
+        if (receivedData.indexOf('A') >= 0 && receivedData.indexOf('B') >= 0) {
+            // save the data between 'B' and 'E'
+            sendData = receivedData.substring(receivedData.indexOf('A') + 1, receivedData.indexOf('B'));
+            receivedData = '';
+            console.log('data received: ' + sendData);
+        }
+         console.log('data received: ' + sendData);
     });
-      serialPort.write("ls\n", function(err, results) {
-        console.log('err ' + err);
-        console.log('results ' + results);
-      });
-    });
-
-
+    // serialPort.write("ls\n", function(err, results) {
+    //     console.log('err ' + err);
+    //     console.log('results ' + results);
+    // });
+});
