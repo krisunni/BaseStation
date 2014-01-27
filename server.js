@@ -1,51 +1,49 @@
-/*
-
-var http = require("http");
-function start() {
-  function onRequest(request, response) {
-    console.log("Request received.");
-    response.writeHead(200, {"Content-Type": "text/plain"});
-    SerialRead();
- response.write("Hello World");
-    response.end();
-  }
-
-  http.createServer(onRequest).listen(8888);
-  console.log("Server has started.");
-}
-
-exports.start = start;
-
-*/
-
-
 var SerialPort = require("serialport").SerialPort
+var readline = require('readline');
+var PortName = "/dev/ttyACM0";
+var BaudRate = "9600";
 
-var serialPort = new SerialPort("/dev/ttyACM0", {
-    baudrate: 9600
+var serialPort = new SerialPort(PortName, {
+    baudrate: BaudRate //arser: serialPort.parsers.readline("\n")
 }, false); // this is the openImmediately flag [default is true]
+
 var receivedData = "";
 var sendData = "";
+var StartChar = "A";
+var EndChar = "B";
+var rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+
 serialPort.open(function() {
     console.log('open');
-    
-    /*  serialPort.on('data', function(data) {
-      console.log('data received: ' + data);
-    });*/
-    
-    serialPort.on('data', function(data) {
-       //console.log('data received: ' + data);
-        receivedData += data.toString();
-        if (receivedData.indexOf('A') >= 0 && receivedData.indexOf('B') >= 0) {
-            // save the data between 'B' and 'E'
-            sendData = receivedData.substring(receivedData.indexOf('A') + 1, receivedData.indexOf('B'));
-            receivedData = '';
-            console.log('data received: ' + sendData);
-        }
-         console.log('data received: ' + sendData);
+
+  serialPort.on('data', function(data) {
+        console.log('data received: ' + data);
     });
-    // serialPort.write("ls\n", function(err, results) {
-    //     console.log('err ' + err);
-    //     console.log('results ' + results);
-    // });
+
+   rl.question("Enter Manual Door Position", function(answer) {
+        answer="P " + answer+"\n";
+        console.log("Sending to Arduino",answer);
+        //Serial Write function Test
+        serialPort.write(new Buffer(answer,'utf-8'), function(err, results) {
+            console.log('err ' + err);
+            console.log('results ' + results);
+        });
+        rl.close();
+    });
+ serialPort.write(new Buffer('|P 150|\n','utf-8'), function(err, results) {
+            console.log('err ' + err);
+            console.log('results ' + results);
+        });
+        
+        
+        
 });
+
+serialPort.close(function() {
+    console.log('close')});
+
+
+
