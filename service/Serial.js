@@ -23,10 +23,10 @@ function Write(Options)
     var serialPort = new SerialPort(Options.Port,
     {
         baudrate: Options.BaudRate //arser: serialPort.parsers.readline("\n")
-    }, false); // this is the openImmediately flag [default is true]
+    }, true); // this is the openImmediately flag [default is true]
 
     serialPort.open(function()
-    {
+    {   //serialPort.on('data', function(data){});
         console.log('Opening Serial Port');
         console.log('Writing' + Options.Command);
         serialPort.write(Options.Command);
