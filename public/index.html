@@ -1,0 +1,36 @@
+<!--<!DOCTYPE html>
+<html>
+
+    <body>  <script src="lib/angular/angular.js"></script>
+
+        <form action="http://pi.ku:3000/write?&fname" method="get">Message:
+            <input type="text" name="fname" />
+            <button type="submit" formmethod="post" formaction="http://pi.ku:3000/write?&fname">Send to Arduino</button>
+        </form>
+    </body>
+
+</html>N-->
+<!doctype html>
+<html lang="en" ng-app>
+    
+    <head>
+        <meta charset="utf-8">
+        <title>My HTML File</title>
+        <script src="http://pi.ku:3000/angularjs"></script>
+        <!-- <script src="http://code.angularjs.org/1.2.10/angular.min.js"></script>-->
+        <script src="http://pi.ku:3000/script"></script>
+        <script src="http://pi.ku:3000/protractorTest"></script>
+    </head>
+    
+    <body>
+        <p>Nothing here {{'yet' + '!'}}</p>
+        <form ng-controller="UserController" ng-submit="SerialManual()">
+            <legend>Manaul Command</legend>
+            <label>Name</label>
+            <input type="text" id="name" name="name" ng-model="user.command"
+            placeholder="Manual 100">
+            <button class="btn btn-primary">Register</button>
+        </form>
+    </body>
+
+</html>

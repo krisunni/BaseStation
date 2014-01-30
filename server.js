@@ -18,9 +18,19 @@ app.get('/angularjs', function(req, res) {
 app.get('/write', function(req, res) {
     var url_parts = url.parse(req.url, true);
     var request = url_parts.query;
-    //console.log(request.command);
+    console.log(request.command);
     Write(request.command);
     res.send('<p>Thank you</p>');
+});
+
+app.get('/angular', function(req, res) {
+    res.sendfile(__dirname + '/public/bower_components/angular/angular.js');
+});
+app.get('/script', function(req, res) {
+    res.sendfile(__dirname + '/public/script.js');
+});
+app.get('/protractorTest', function(req, res) {
+    res.sendfile(__dirname + '/public/protractorTest.js');
 });
 
 /* Read WebService*/
@@ -29,7 +39,7 @@ app.get('/read', function(req, res) {
     var request = url_parts.query;
     console.log(request);
     console.log(request.command);*/
-    console.log('Raw console output'+Serial.Read({
+    console.log('Raw console output' + Serial.Read({
         StartChar: '{',
         EndChar: '}'
     }));
