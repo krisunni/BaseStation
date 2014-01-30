@@ -1,47 +1,68 @@
-/*var SerialPort = require("serialport").SerialPort
-var Serial = require("./service/Serial")
-
-Serial.Write(
-{
-    Command: 'P 150'
-});
-*/
-
-var Serial = require("./service/Serial")
+var Serial = require("./service/Serial");
 var express = require('express');
-var url  = require('url');
+var url = require('url');
 
 var app = express();
-
-app.use(express.urlencoded())
+var ArdPort = '/dev/ttyACM0';
+app.use(express.urlencoded());
 app.listen(3000);
 
-app.get('/', function(req, res)
-{
+/* ServiceStaticPage */
+app.get('/', function(req, res) {
     res.sendfile(__dirname + '/public/index.html');
 });
-
-/* URL Manual Override*/
-app.get('/write', function(req, res)
-{   var url_parts = url.parse(req.url, true);
-   var request = url_parts.query;
-    console.log(request);
-    console.log(request.command);
-    Write(request.command);
-    res.send('<p>Thank you</p>')
+app.get('/angularjs', function(req, res) {
+    res.sendfile(__dirname + '/bower_components/index.html');
 });
-app.post('/write', function(req, res)
-{
+/* Write WebService*/
+app.get('/write', function(req, res) {
+    var url_parts = url.parse(req.url, true);
+    var request = url_parts.query;
+    //console.log(request.command);
+    Write(request.command);
+    res.send('<p>Thank you</p>');
+});
+
+/* Read WebService*/
+app.get('/read', function(req, res) {
+    /*var url_parts = url.parse(req.url, true);
+    var request = url_parts.query;
+    console.log(request);
+    console.log(request.command);*/
+    console.log('Raw console output'+Serial.Read({
+        StartChar: '{',
+        EndChar: '}'
+    }));
+    var data = Serial.Read({
+        StartChar: '{',
+        EndChar: '}'
+    });
+    console.log('This is Server: Value of Data is ' + data);
+    res.send('<p>' + data + '<p>');
+});
+
+/* Write POST service*/
+
+app.post('/write', function(req, res) {
     console.log(req.body.data);
-    res.send('<p>Thank you</p>')
+    res.send('<p>200 OK</p>');
     Write(req.body.data);
 });
 
+/*Serial Write module wrapper*/
+function Write(data) {
+    Serial.Write({
+        Command: data,
+        Debug: 'False',
+        Port: ArdPort,
+    });
+}
+/* Serial Read module wrapper*/
 
-function Write(data)
-{
-    Serial.Write(
-    {
-        Command: data
+function Read(data) {
+    data = Serial.Read({
+        StartChar: '{',
+        EndChar: '}',
+        Port: ArdPort,
     });
 }
