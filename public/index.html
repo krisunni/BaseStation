@@ -11,26 +11,42 @@
 
 </html>N-->
 <!doctype html>
-<html lang="en" ng-app>
-    
+<html lang="en" ng-app="phonecatApp">
+
     <head>
         <meta charset="utf-8">
-        <title>My HTML File</title>
+        <title>BaseStation</title>
         <script src="http://pi.ku:3000/angularjs"></script>
-        <!-- <script src="http://code.angularjs.org/1.2.10/angular.min.js"></script>-->
+        <!-- for google CDN use this <script src="http://code.angularjs.org/1.2.10/angular.min.js"></script>-->
+        <script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.10.0.js"></script>
+        <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css"
+        rel="stylesheet">
         <script src="http://pi.ku:3000/script"></script>
-        <script src="http://pi.ku:3000/protractorTest"></script>
     </head>
-    
+
     <body>
-        <p>Nothing here {{'yet' + '!'}}</p>
+        <!--<p>Nothing here {{'yet' + '!'}}</p>-->
         <form ng-controller="UserController" ng-submit="SerialManual()">
-            <legend>Manaul Command</legend>
-            <label>Name</label>
-            <input type="text" id="name" name="name" ng-model="user.command"
+            <legend>Process Manaul Command</legend>
+<!--            <label>Pick a Command</label>
+            <div data-ng-controller="UserOptions">
+                <div>Choose a new activity:
+                    <select data-ng-model="user.defaultAction" data-ng-options="act for act in activities"></select>
+                </div>
+            </div>
+            <h4>Auto Features</h4>-->
+
+            <input type="text" id="Arguments" name="Arguments" ng-model="user.command"
             placeholder="Manual 100">
-            <button class="btn btn-primary">Register</button>
+            <button class="btn btn-primary">Send</button>
         </form>
+        <!-- <div class="btn-group">
+                <button type="button" class="btn btn-primary" ng-model="radioModel" btn-radio="'Left'">Left</button>
+                <button type="button" class="btn btn-primary" ng-model="radioModel"
+                btn-radio="'Middle'">Middle</button>
+                <button type="button" class="btn btn-primary" ng-model="radioModel"
+                btn-radio="'Right'">Right</button>
+            </div>-->
     </body>
 
 </html>

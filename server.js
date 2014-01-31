@@ -3,7 +3,7 @@ var express = require('express');
 var url = require('url');
 
 var app = express();
-var ArdPort = '/dev/ttyACM0';
+var ArdPort = '/dev/ttyACM1';
 app.use(express.urlencoded());
 app.listen(3000);
 
@@ -11,9 +11,9 @@ app.listen(3000);
 app.get('/', function(req, res) {
     res.sendfile(__dirname + '/public/index.html');
 });
-app.get('/angularjs', function(req, res) {
+/*app.get('/angularjs', function(req, res) {
     res.sendfile(__dirname + '/bower_components/index.html');
-});
+});*/
 /* Write WebService*/
 app.get('/write', function(req, res) {
     var url_parts = url.parse(req.url, true);
@@ -23,7 +23,8 @@ app.get('/write', function(req, res) {
     res.send('<p>Thank you</p>');
 });
 
-app.get('/angular', function(req, res) {
+/* Serving Static pages to be used in index.html*/
+app.get('/angularjs', function(req, res) {
     res.sendfile(__dirname + '/public/bower_components/angular/angular.js');
 });
 app.get('/script', function(req, res) {
