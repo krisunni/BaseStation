@@ -1,3 +1,4 @@
+/*Contoller for BaseStation*/
 
 function UserController($scope, $http) {
     $scope.user = {};
@@ -23,16 +24,3 @@ function UserOptions($scope) {
 
     $scope.activities = ["ON", "OFF", "Manual", "Hello"];
 }
-
-var ButtonsCtrl = function ($scope) {
-
-  $scope.singleModel = 1;
-
-  $scope.radioModel = 'Middle';
-
-  $scope.checkModel = {
-    left: false,
-    middle: true,
-    right: false
-  };
-};

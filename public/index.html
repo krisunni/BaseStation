@@ -1,25 +1,12 @@
-<!--<!DOCTYPE html>
-<html>
-
-    <body>  <script src="lib/angular/angular.js"></script>
-
-        <form action="http://pi.ku:3000/write?&fname" method="get">Message:
-            <input type="text" name="fname" />
-            <button type="submit" formmethod="post" formaction="http://pi.ku:3000/write?&fname">Send to Arduino</button>
-        </form>
-    </body>
-
-</html>N-->
 <!doctype html>
-<html lang="en" ng-app="phonecatApp">
+<html lang="en" ng-app>
 
     <head>
         <meta charset="utf-8">
         <title>BaseStation</title>
-        <script src="http://pi.ku:3000/angularjs"></script>
-        <!-- for google CDN use this <script src="http://code.angularjs.org/1.2.10/angular.min.js"></script>-->
-        <script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.10.0.js"></script>
-        <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css"
+        <script src="/bower_components/angular/angular.js"></script>
+        <script src="/bower_components/angular-bootstrap/ui-bootstrap.min.js"></script>
+        <link href="/bower_components/bootstrap/dist//css/bootstrap.min.css"
         rel="stylesheet">
         <script src="http://pi.ku:3000/script"></script>
     </head>
@@ -27,26 +14,23 @@
     <body>
         <!--<p>Nothing here {{'yet' + '!'}}</p>-->
         <form ng-controller="UserController" ng-submit="SerialManual()">
-            <legend>Process Manaul Command</legend>
-<!--            <label>Pick a Command</label>
+            <legend>Process {{'Manual'}} {{'Command'}}</legend>
+            <label>Pick a Command</label>
             <div data-ng-controller="UserOptions">
                 <div>Choose a new activity:
-                    <select data-ng-model="user.defaultAction" data-ng-options="act for act in activities"></select>
+                    <select data-ng-model="user.activities" data-ng-options="act for act in activities"></select>
                 </div>
             </div>
-            <h4>Auto Features</h4>-->
-
+            <h4>Auto Features</h4>
             <input type="text" id="Arguments" name="Arguments" ng-model="user.command"
             placeholder="Manual 100">
             <button class="btn btn-primary">Send</button>
         </form>
-        <!-- <div class="btn-group">
-                <button type="button" class="btn btn-primary" ng-model="radioModel" btn-radio="'Left'">Left</button>
-                <button type="button" class="btn btn-primary" ng-model="radioModel"
-                btn-radio="'Middle'">Middle</button>
-                <button type="button" class="btn btn-primary" ng-model="radioModel"
-                btn-radio="'Right'">Right</button>
-            </div>-->
+        <ul class="dropdown-menu">
+            <li ng-repeat="choice in items">
+                <a>{{choice}}</a>
+            </li>
+        </ul>
     </body>
 
 </html>
