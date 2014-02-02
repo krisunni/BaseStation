@@ -1,37 +1,26 @@
 var Serial = require("./service/Serial");
 var express = require('express');
 var url = require('url');
+/*var angular = require('./public/bower_components/angular/angular');
+var Controllor = require('./public/script.js');*/
+
 
 var app = express();
 var ArdPort = '/dev/ttyACM1';
 app.use(express.urlencoded());
 app.listen(3000);
 
-/* ServiceStaticPage */
-app.get('/', function(req, res) {
-    res.sendfile(__dirname + '/public/index.html');
-});
-/*app.get('/angularjs', function(req, res) {
-    res.sendfile(__dirname + '/bower_components/index.html');
-});*/
+/* Serve the /public dir */
+app.use(express.static(__dirname + '/public'));
+
+
 /* Write WebService*/
 app.get('/write', function(req, res) {
     var url_parts = url.parse(req.url, true);
     var request = url_parts.query;
     console.log(request.command);
     Write(request.command);
-    res.send('<p>Thank you</p>');
-});
-
-/* Serving Static pages to be used in index.html*/
-app.get('/angularjs', function(req, res) {
-    res.sendfile(__dirname + '/public/bower_components/angular/angular.js');
-});
-app.get('/script', function(req, res) {
-    res.sendfile(__dirname + '/public/script.js');
-});
-app.get('/protractorTest', function(req, res) {
-    res.sendfile(__dirname + '/public/protractorTest.js');
+    res.send('<p> Command:' + request.command + ':Recieved</p>');
 });
 
 /* Read WebService*/

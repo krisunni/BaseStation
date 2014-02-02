@@ -1,5 +1,7 @@
 /*Contoller for BaseStation*/
 
+angular.module('BaseStation', []);
+
 function UserController($scope, $http) {
     $scope.user = {};
     $scope.SerialManual = function() {
@@ -7,6 +9,14 @@ function UserController($scope, $http) {
             method: 'GET',
             url: 'http://pi.ku:3000/write?command=' + $scope.user.command
         });
+        $scope.user.command = '';
+    };
+    $scope.SerialWriteActivity = function($Activity) {
+        $http({
+            method: 'GET',
+            url: 'http://pi.ku:3000/write?command=' + $Activity
+        });
+
     };
     $scope.SerialManualRead = function() {
         $http({
@@ -22,5 +32,6 @@ function UserOptions($scope) {
         activities: "ON"
     };
 
-    $scope.activities = ["ON", "OFF", "Manual", "Hello"];
+    $scope.activities = ["Manual 5", "Manual 50", "Manual 100", "Manual 150", "Hello", "ON", "OFF", ];
+
 }

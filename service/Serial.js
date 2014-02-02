@@ -9,6 +9,20 @@ var Options = {
     EndChar: '}',
 };
 
+function Start(Options)
+{   Options.Port = typeof Options.Port !== 'undefined' ? Options.Port : "/dev/ttyACM0"; // Set default Port
+    Options.BaudRate = typeof Options.BaudRate !== 'undefined' ? Options.BaudRate : "9600"; // Set default BaudRate
+    Options.Command = typeof Options.Command !== 'undefined' ? Options.Command : "ON"; // Set default BaudRate
+    Options.Term = typeof Options.Term !== 'undefined' ? Options.Command : "\n"; // Set default Terminator
+    Options.Debug = typeof Options.Debug !== 'undefined' ? Options.Debug : "False"; // Set default Terminator
+    var serialPort = new SerialPort(Options.Port, {
+        baudrate: Options.BaudRate //arser: serialPort.parsers.readline("\n")
+    }, true); // this is the openImmediately flag [default is true]
+}
+function Close (serialPort)
+{
+     serialPort.close();
+}
 
 /* Write Serial commands */
 function Write(Options) {
@@ -105,4 +119,7 @@ function AddTerminator(Message, Term) {
 
 exports.Write = Write;
 exports.Read = Read;
+exports.Start = Start;
+
+
 exports.ReadForever = ReadForever;
