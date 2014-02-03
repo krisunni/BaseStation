@@ -1,1 +1,0 @@
-{"ts":1390311329900,"silentsave":true,"restoring":false,"patch":[[{"diffs":[[1,"socket.on('buttonval', function(data) {\n    serialPort.write(data + 'E');\n});\nsocket.on('sliderval', function(data) {\n    serialPort.write(data + 'P');\n});"]],"start1":0,"start2":0,"length1":0,"length2":155}]],"length":155}
