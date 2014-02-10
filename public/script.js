@@ -35,3 +35,10 @@ function UserOptions($scope) {
     $scope.activities = ["Manual 5", "Manual 50", "Manual 100", "Manual 150", "Hello", "ON", "OFF", ];
 
 }
+
+function ArduinoRead($scope, socket) {
+    socket.on('message', function(message) {
+        $scope.view=message.toString() ;
+        console.log(message.toString());
+    });
+}

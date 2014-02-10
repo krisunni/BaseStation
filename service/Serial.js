@@ -1,4 +1,6 @@
 var SerialPort = require("serialport").SerialPort
+var debug= false;
+
 var Options = {
     Command: 'ON',
     Term: '\n',
@@ -33,7 +35,7 @@ function Write(Options) {
     Options.Debug = typeof Options.Debug !== 'undefined' ? Options.Debug : "False"; // Set default Terminator
 
     Options.Command = AddTerminator(Options.Command, Options.Term);
-    console.log("Write: Command Recieved" + Options.Command);
+   // console.log("Write: Command Recieved" + Options.Command);
     var serialPort = new SerialPort(Options.Port, {
         baudrate: Options.BaudRate //arser: serialPort.parsers.readline("\n")
     }, true); // this is the openImmediately flag [default is true]
@@ -61,7 +63,7 @@ function Write(Options) {
 
 /* Read Serial commands */
 
-function Read(Options) {
+function Read(Options,socket) {
     var receivedData = "";
     var sendData = "";
     var Status = AddTerminator('Hello', Options.Term);
@@ -70,6 +72,7 @@ function Read(Options) {
     Options.BaudRate = typeof Options.BaudRate !== 'undefined' ? Options.BaudRate : "9600"; // Set default BaudRate
     var serialPort = new SerialPort(Options.Port, {
         baudrate: Options.BaudRate,
+        /*parser  : serial.parsers.readline( "\n" )*/
     }, false); // this is the openImmediately flag [default is true]
 
     serialPort.open(function() {
@@ -77,26 +80,20 @@ function Read(Options) {
         console.log('Read: Opening Serial Port');
         serialPort.on('data', function(data) {
             receivedData += data.toString();
-            //console.log('Read: Data' + data.toString());
-            //console.log('Read: ' + Options.StartChar);
-            /*console.log(receivedData.indexOf(Options.StartChar));
-            console.log(receivedData.indexOf(Options.EndChar));
-           */
+
             if (receivedData.indexOf(Options.StartChar) >= 0 && receivedData.indexOf(Options.EndChar) >= 0) {
                 sendData = receivedData.substring(receivedData.indexOf(Options.StartChar) + 1, receivedData.indexOf(Options.EndChar));
                 receivedData = '';
                 //console.log('This block is executed');
-                //console.log('Read: Read Data :sendData = ' + sendData.toString());
+                console.log('Read: Read Data :sendData = ' + sendData.toString());
                 Message = sendData.toString();
-
-                console.log('Read: Read Data :Message =' + Message);
-                 return Message;
+                socket.emit( "message", sendData.toString() );
             }
         });
     });
 }
 
-function ReadForever() {
+function ReadForever(socket) {
     var PortName = "/dev/ttyACM0";
     var BaudRate = "9600";
 
@@ -107,11 +104,19 @@ function ReadForever() {
         console.log('Opening Serial');
 
         serialPort.on('data', function(data) {
-            console.log('data received: ' + data);
+           // console.log('data received: ' + data);
+            socket.emit( "message", data.toString() );
         });
     });
 }
-
+function Debugger(text)
+{
+    if (debug===true)
+    {
+        console.log(text);
+    }
+    
+}
 function AddTerminator(Message, Term) {
     var Output = Message.concat(Term);
     return Output;
@@ -120,6 +125,6 @@ function AddTerminator(Message, Term) {
 exports.Write = Write;
 exports.Read = Read;
 exports.Start = Start;
-
+exports.Options =Options;
 
 exports.ReadForever = ReadForever;
