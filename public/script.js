@@ -32,13 +32,33 @@ function UserOptions($scope) {
         activities: "ON"
     };
 
-    $scope.activities = ["Manual 5", "Manual 50", "Manual 100", "Manual 150", "Hello", "ON", "OFF", ];
+    $scope.activities = ["Manual 5", "Manual 50", "Manual 100", "Manual 150", "Hello", "ON", "OFF" ];
 
 }
 
 function ArduinoRead($scope, socket) {
-    socket.on('message', function(message) {
+    socket.on('update', function(message) {
         $scope.view=message.toString() ;
         console.log(message.toString());
     });
 }
+
+
+
+/*angular.module('BaseStation', [
+  'btford.socket-io',
+  'myApp.MyCtrl'
+])
+factory('mySocket', function (socketFactory)) {
+  var mySocket = socketFactory();
+  mySocket.forward('error');
+  return mySocket;
+});
+
+// in one of your controllers
+angular.module('myApp.MyCtrl', []).
+  controller('MyCtrl', function ($scope) {
+    $scope.$on('socket:error', function (ev, data) {
+
+    });
+  });*/
