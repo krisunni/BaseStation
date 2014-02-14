@@ -12,17 +12,21 @@
         <script src="/bower_components/angular-socket-io/socket.js"></script>
         <script>
             var socket = io.connect('http://pi.ku:3000');
-            /*   socket.on('connection', function(data) {
-            console.log(data);
-            ArduinoRead(socket);
-
-            }); */
-             console.log('socket  created');
-            socket.on('update', function(data) {
-                console.log(data.toString());
-                console.log('Update Recived');
-
+            socket.on('connection', function(data) {
+                console.log(data);
             });
+            console.log('socket  created');
+            socket.on('message', function(data) {
+                console.log(data);
+                console.log('Update Recived');
+   });
+                socket.on('news', function(data) {
+                    console.log(data);
+                    socket.emit('my other event', {
+                        my: 'data'
+                    });
+                });
+         
         </script>
         <script src="/bower_components/angular-bootstrap/ui-bootstrap.min.js"></script>
         <link href="/bower_components/bootstrap/dist/css/bootstrap.min.css"
@@ -47,9 +51,7 @@
             name="Arguments" ng-model="user.command" placeholder="Manual 100">
             <button class="btn btn-primary">Send</button>
         </form>
-        <!--<form ng-controller="ArduinoRead">
-             
-        </form>-->
+
     </body>
 
 </html>

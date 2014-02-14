@@ -37,7 +37,7 @@ function UserOptions($scope) {
 }
 
 function ArduinoRead($scope, socket) {
-    socket.on('update', function(message) {
+    socket.on('message', function(message) {
         $scope.view=message.toString() ;
         console.log(message.toString());
     });

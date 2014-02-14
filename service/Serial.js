@@ -44,9 +44,12 @@ function Write(Options) {
     serialPort.open(function() { //serialPort.on('data', function(data){});
         //console.log('Write: Opening Serial Port');
         //console.log('Write: Writing' + Options.Command);
+        if (Options.Command!== 'undefined'){
         serialPort.write(Options.Command);
+        }
         //console.log('Write: Closing Serial Write');
         serialPort.close();
+        
     });
 
     /*    function SerialOpen(Options) {
