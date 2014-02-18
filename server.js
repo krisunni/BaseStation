@@ -42,8 +42,11 @@ app.get('/write', function(req, res) {
 
 /* Write POST service*/
 
-app.configure('development', function(){
-  app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
+app.configure('development', function() {
+    app.use(express.errorHandler({
+        dumpExceptions: true,
+        showStack: true
+    }));
 });
 
 app.post('/write', function(req, res) {
@@ -62,32 +65,33 @@ function Write(data) {
 }
 
 /* Call Serial Read and pass in the socket*/
-Serial.Read({
-    StartChar: '{',
-    EndChar: '}'
-}, io);
-
-
- Read();
-/*Debug Message when a user connects to socket*/
-io.sockets.on('connection', function(socket) {
-    console.log("user connected");
-     socket.emit('news', { hello: 'world' });
-      socket.emit('message', { sendData: '{ArduinoReady}' });
-  /*  Serial.Read({
+/*Serial.Read({
     StartChar: '{',
     EndChar: '}'
 }, io);*/
+
+
+Read();
+/*Debug Message when a user connects to socket*/
+io.sockets.on('connection', function(socket) {
+    console.log("user connected");
+});
+
+io.sockets.on('message', function(data) {
+    console.log("Recived Arduino Stuff on the Server");
+     console.log(data);
 });
 
 
-
 function Read() {
-    io.emit('message', { sendData: '{Enterint this block}' });
+    io.emit('message', {
+        sendData: '{Enterint this block}'
+    });
     var receivedData = "";
     var sendData = "";
-/*    var Status = AddTerminator('Hello', Options.Term);
-*/    var Message;
+    /*    var Status = AddTerminator('Hello', Options.Term);
+     */
+    var Message;
     Options.Port = typeof Options.Port !== 'undefined' ? Options.Port : "/dev/ttyACM0"; // Set default Port
     Options.BaudRate = typeof Options.BaudRate !== 'undefined' ? Options.BaudRate : "9600"; // Set default BaudRate
     Options.StartChar = typeof Options.StartChar !== 'undefined' ? Options.StartChar : "{";
@@ -106,7 +110,7 @@ function Read() {
                 sendData = receivedData.substring(receivedData.indexOf(Options.StartChar) + 1, receivedData.indexOf(Options.EndChar));
                 receivedData = '';
 
-                console.log('Read: Read Data :sendData = ' + sendData.toString());
+                //console.log('Read: Read Data :sendData = ' + sendData.toString());
                 io.emit("message", sendData);
 
             }
@@ -114,6 +118,3 @@ function Read() {
         });
     });
 }
-
-
-
