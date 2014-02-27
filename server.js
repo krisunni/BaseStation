@@ -3,17 +3,29 @@ var express = require('express');
 var url = require('url');
 var Opt = Serial.Options;
 var SerialPort = require("serialport").SerialPort
-
+var ArdPort = '/dev/ttyUSB0';
+var ServerPort = 3000;
 var Options = {
     Command: 'ON',
     Term: '\n',
     Debug: 'False',
-    Port: '/dev/ttyACM0',
+    Port: '/dev/ttyUSB0',
     BaudRate: 9600,
     StartChar: '{',
     EndChar: '}',
 };
+var receivedData = "";
+    var sendData = "";
 
+    var Message;
+    Options.Port = typeof Options.Port !== 'undefined' ? Options.Port : "/dev/ttyUSB0"; // Set default Port
+    Options.BaudRate = typeof Options.BaudRate !== 'undefined' ? Options.BaudRate : "9600"; // Set default BaudRate
+    Options.StartChar = typeof Options.StartChar !== 'undefined' ? Options.StartChar : "{";
+    Options.EndChar = typeof Options.EndChar !== 'undefined' ? Options.EndChar : "}";
+    var serialPort = new SerialPort(Options.Port, {
+        baudrate: Options.BaudRate,
+
+    }, false);
 
 var app = express(),
     http = require('http'),
@@ -22,13 +34,14 @@ var app = express(),
 io.set('log level', 1);
 
 app.use(express.compress());
-server.listen(3000);
-var ArdPort = '/dev/ttyACM0';
+server.listen(ServerPort);
+
 app.use(express.urlencoded());
 
 /* Serve the /public dir */
 app.use(express.static(__dirname + '/public'));
-
+/*Read();
+ */
 
 
 /* Write WebService*/
@@ -64,43 +77,29 @@ function Write(data) {
     });
 }
 
-/* Call Serial Read and pass in the socket*/
-/*Serial.Read({
-    StartChar: '{',
-    EndChar: '}'
-}, io);*/
-
-
-Read();
-/*Debug Message when a user connects to socket*/
-io.sockets.on('connection', function(socket) {
-    console.log("user connected");
-});
-
-io.sockets.on('message', function(data) {
-    console.log("Recived Arduino Stuff on the Server");
-     console.log(data);
+io.sockets.on('disconnect', function(socket) {
+        console.log('User Disconncted, Termination Serial Port');
+        serialPort.close();
 });
 
 
-function Read() {
-    io.emit('message', {
-        sendData: '{Enterint this block}'
-    });
-    var receivedData = "";
-    var sendData = "";
-    /*    var Status = AddTerminator('Hello', Options.Term);
-     */
-    var Message;
-    Options.Port = typeof Options.Port !== 'undefined' ? Options.Port : "/dev/ttyACM0"; // Set default Port
-    Options.BaudRate = typeof Options.BaudRate !== 'undefined' ? Options.BaudRate : "9600"; // Set default BaudRate
-    Options.StartChar = typeof Options.StartChar !== 'undefined' ? Options.StartChar : "{";
-    Options.EndChar = typeof Options.EndChar !== 'undefined' ? Options.EndChar : "}";
-    var serialPort = new SerialPort(Options.Port, {
-        baudrate: Options.BaudRate,
-        /*parser  : serial.parsers.readline( "\n" )*/
-    }, false); // this is the openImmediately flag [default is true]
+io.sockets.on('update', function(data) {
+    console.log("Recived update event|||||||");
+    console.log(data);
+});
+server.emit('update', {
+    sendData: '{DummyMessage}'
+});
 
+//Debug Message when a user connects to socket
+/*io.sockets.on('connection', function(socket) {
+    console.log("User Connected");
+//    Serial.Read({
+//        StartChar: '{',
+//        EndChar: '}'
+//    }, socket);
+
+    
     serialPort.open(function() {
         //serialPort.write(Status);
         console.log('Read: Opening Serial Port');
@@ -109,12 +108,16 @@ function Read() {
             if (receivedData.indexOf(Options.StartChar) >= 0 && receivedData.indexOf(Options.EndChar) >= 0) {
                 sendData = receivedData.substring(receivedData.indexOf(Options.StartChar) + 1, receivedData.indexOf(Options.EndChar));
                 receivedData = '';
-
-                //console.log('Read: Read Data :sendData = ' + sendData.toString());
-                io.emit("message", sendData);
-
             }
+            socket.emit("update", sendData);
 
         });
     });
-}
+socket.on('disconnect', function(socket) {
+        console.log('User Disconncted, Termination Serial Port');
+        serialPort.close();
+});
+
+});
+*/
+Serial.start();

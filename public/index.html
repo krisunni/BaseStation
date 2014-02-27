@@ -11,21 +11,22 @@
         <script src="/socket.io/socket.io.js"></script>
         <script src="/bower_components/angular-socket-io/socket.js"></script>
         <script>
-            var socket = io.connect('http://pi.ku:3000');
+            var socket = io.connect('http://pi.ku:3001');
             socket.on('connection', function(data) {
                 console.log(data);
             });
             console.log('socket  created');
-            socket.on('message', function(data) {
+            socket.on('update', function(data) {
                 console.log(data);
-                console.log('Update Recived');
+                document.getElementById("ReadVal").value =data;
+                //console.log('Update Recived to Client');
             });
-            socket.on('news', function(data) {
+             socket.on('UpdateClient', function(data) {
                 console.log(data);
-                socket.emit('my other event', {
-                    my: 'data'
-                });
+                document.getElementById("ReadVal").value =data;
+                //console.log('Update Recived to Client');
             });
+            
         </script>
         <script src="/bower_components/angular-bootstrap/ui-bootstrap.min.js"></script>
         <link href="/bower_components/bootstrap/dist/css/bootstrap.min.css"
@@ -49,6 +50,8 @@
             <input type="text" id="Arguments"
             name="Arguments" ng-model="user.command" placeholder="Manual 100">
             <button class="btn btn-primary">Send</button>
+            <input class="width250" type="text" id="ReadVal" placeholder="Waiting on Serial Read"  class="form-control input-sm" />
+
         </form>
     </body>
 
