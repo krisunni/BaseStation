@@ -11,22 +11,56 @@
         <script src="/socket.io/socket.io.js"></script>
         <script src="/bower_components/angular-socket-io/socket.js"></script>
         <script>
-            var socket = io.connect('http://pi.ku:3001');
+            var socket = io.connect('http://pi.ku:3000');
             socket.on('connection', function(data) {
                 console.log(data);
+                console.log('socket  created');
             });
-            console.log('socket  created');
             socket.on('update', function(data) {
                 console.log(data);
-                document.getElementById("ReadVal").value =data;
-                //console.log('Update Recived to Client');
+                document.getElementById("ReadVal").value = data.slice(data.indexOf('{'), data.indexOf('}'));;
+                console.log('Update Recived to Client');
             });
-             socket.on('UpdateClient', function(data) {
+            socket.on('UpdateClient', function(data) {
                 console.log(data);
-                document.getElementById("ReadVal").value =data;
-                //console.log('Update Recived to Client');
+                document.getElementById("ReadVal").value = data
+                //.slice(data.indexOf('{'),data.indexOf('}'));
+                console.log('Update Recieved to Client');
             });
+
+            socket.on('onconnection', function(value) {
+                // recieve changed values by other client from server
+                socket.on('event', function(data) {
+                    console.log(data);
+                    document.getElementById("ReadVal").value = data;
+                    //.slice(data.indexOf('{'),data.indexOf('}'));
+                    console.log('Update Recieved to Client');
+                });
+            });
+
             
+            window.addEventListener('deviceorientation', function(event) {
+                var alpha = Math.round(event.alpha * 100) / 100;
+                var beta = Math.round(event.beta * 100) / 100;
+                var gamma = Math.round(event.gamma * 100) / 100;
+            if (beta>10 && gamma>10)
+            {   var command="Manual" + beta;
+
+                SerialWriteActivity(command);
+            }
+                document.getElementById("alpha").innerHTML = alpha;
+                document.getElementById("beta").innerHTML = beta;
+                document.getElementById("gamma").innerHTML = gamma;
+            
+            }, false);
+            var multiplier = 3;
+
+            function map2 ( value,  from1,  to1,  from2,  to2) {
+return (value - from1) / (to1 - from1) * (to2 - from2) + from2;            }
+            function map(value,max,minrange,maxrange) {
+    return Math.round(((max-value)/(max))*(maxrange-minrange))+minrange;
+}
+
         </script>
         <script src="/bower_components/angular-bootstrap/ui-bootstrap.min.js"></script>
         <link href="/bower_components/bootstrap/dist/css/bootstrap.min.css"
@@ -40,18 +74,39 @@
             <div data-ng-controller="UserOptions" class="container">
                 <span ng-repeat="act in activities" style="float:left">
                     <p>
-                        <button class="btn btn-primary" ng-model="user.activities" ng-click="SerialWriteActivity(act)">{{act}}</button>
+                        <button class="btn btn-primary btn-lg" ng-model="user.activities" ng-click="SerialWriteActivity(act)">{{act}}</button>
                         <br>
                     </p>
                 </span>
             </div>
             <!-- This is the Manual override block -->
             <legend>Process {{'Manual'}} {{'Command'}}</legend>
-            <input type="text" id="Arguments"
-            name="Arguments" ng-model="user.command" placeholder="Manual 100">
-            <button class="btn btn-primary">Send</button>
-            <input class="width250" type="text" id="ReadVal" placeholder="Waiting on Serial Read"  class="form-control input-sm" />
-
+            <input class="input-lg input-block"
+            type="text" id="Arguments" name="Arguments" ng-model="user.command" placeholder="Manual 100">
+            <button class="btn btn-primary btn-lg btn-block">Send</button>
+            <input class="input-lg" type="text" id="ReadVal" placeholder="Waiting on Serial Read"
+            class="form-control input-lg" />
+            <table class="table">
+                <thread>
+                    <tr>
+                        <legend>Raw {{'Values'}} {{'From IMU '}}</legend>
+                        <th>
+                            <b1>z [0, 360).</b1>
+                            <div id="alpha">a</div>
+                        </th>
+                        <th>
+                            <b1>x [-180, 180).</b1>
+                            <div id="beta">b</div>
+                        </th>
+                        <th>
+                            <b1>y [-90, 90).</b1>
+                            <div id="gamma">g</div>
+                        </th>
+                    </tr>
+                 
+                    </tr>
+                </thread>
+            </table>
         </form>
     </body>
 

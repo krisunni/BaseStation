@@ -14,18 +14,7 @@ var Options = {
     StartChar: '{',
     EndChar: '}',
 };
-var receivedData = "";
-    var sendData = "";
 
-    var Message;
-    Options.Port = typeof Options.Port !== 'undefined' ? Options.Port : "/dev/ttyUSB0"; // Set default Port
-    Options.BaudRate = typeof Options.BaudRate !== 'undefined' ? Options.BaudRate : "9600"; // Set default BaudRate
-    Options.StartChar = typeof Options.StartChar !== 'undefined' ? Options.StartChar : "{";
-    Options.EndChar = typeof Options.EndChar !== 'undefined' ? Options.EndChar : "}";
-    var serialPort = new SerialPort(Options.Port, {
-        baudrate: Options.BaudRate,
-
-    }, false);
 
 var app = express(),
     http = require('http'),
@@ -38,6 +27,10 @@ server.listen(ServerPort);
 
 app.use(express.urlencoded());
 
+   var serialPort = new SerialPort(Options.Port, {
+        baudrate: Options.BaudRate,
+
+    }, false);
 /* Serve the /public dir */
 app.use(express.static(__dirname + '/public'));
 /*Read();
@@ -77,47 +70,60 @@ function Write(data) {
     });
 }
 
-io.sockets.on('disconnect', function(socket) {
+/*io.sockets.on('disconnect', function(socket) {
         console.log('User Disconncted, Termination Serial Port');
         serialPort.close();
 });
-
+*/
 
 io.sockets.on('update', function(data) {
     console.log("Recived update event|||||||");
     console.log(data);
 });
-server.emit('update', {
-    sendData: '{DummyMessage}'
-});
 
 //Debug Message when a user connects to socket
-/*io.sockets.on('connection', function(socket) {
+io.sockets.on('connection', function(socket) {
     console.log("User Connected");
-//    Serial.Read({
-//        StartChar: '{',
-//        EndChar: '}'
-//    }, socket);
+    var receivedData = "";
+    var sendData = "";
+    var Message;
+    Options.Port = typeof Options.Port !== 'undefined' ? Options.Port : "/dev/ttyUSB0"; // Set default Port
+    Options.BaudRate = typeof Options.BaudRate !== 'undefined' ? Options.BaudRate : "9600"; // Set default BaudRate
+    Options.StartChar = typeof Options.StartChar !== 'undefined' ? Options.StartChar : "{";
+    Options.EndChar = typeof Options.EndChar !== 'undefined' ? Options.EndChar : "}";
+   /* 
+   var serialPort = new SerialPort(Options.Port, {
+        baudrate: Options.BaudRate,
 
-    
+    }, false);
+*/
     serialPort.open(function() {
-        //serialPort.write(Status);
-        console.log('Read: Opening Serial Port');
         serialPort.on('data', function(data) {
             receivedData += data.toString();
+            console.log(receivedData);
             if (receivedData.indexOf(Options.StartChar) >= 0 && receivedData.indexOf(Options.EndChar) >= 0) {
                 sendData = receivedData.substring(receivedData.indexOf(Options.StartChar) + 1, receivedData.indexOf(Options.EndChar));
                 receivedData = '';
+
             }
+            console.log(sendData);
             socket.emit("update", sendData);
 
         });
     });
-socket.on('disconnect', function(socket) {
-        console.log('User Disconncted, Termination Serial Port');
-        serialPort.close();
 });
 
+/*Serial.start();
+
+var socketclient = require('socket.io-client');
+var ClientSocket = socketclient.connect('pi.ku:3001', {reconnect: true});
+ClientSocket.on('connect', function() { 
+    //console.log('Connected!');
+
+
+});
+ClientSocket.on('event', function(data) {
+    console.log("Recived message event|||||||");
+    console.log(data);
 });
 */
-Serial.start();

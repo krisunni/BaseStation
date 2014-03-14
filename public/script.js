@@ -32,13 +32,14 @@ function UserOptions($scope) {
         activities: "ON"
     };
 
-    $scope.activities = ["Manual 5", "Manual 50", "Manual 100", "Manual 150", "Hello", "ON", "OFF" ];
+    // $scope.activities = ["Manual 5", "Manual 50", "Manual 100", "Manual 150", "Hello", "ON", "OFF" ];
+    $scope.activities = ["Drive 100 100 ", "Turn 255 ", "Drive 255"];
 
 }
 
 function ArduinoRead(socket) {
     socket.on('message', function(message) {
-        $scope.view=message.toString() ;
+        $scope.view = message.toString();
         console.log(message.toString());
     });
 }
