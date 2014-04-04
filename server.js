@@ -27,15 +27,14 @@ server.listen(ServerPort);
 
 app.use(express.urlencoded());
 
-   var serialPort = new SerialPort(Options.Port, {
-        baudrate: Options.BaudRate,
+/*var serialPort = new SerialPort(Options.Port, {
+    baudrate: Options.BaudRate,
 
-    }, false);
+}, false);*/
 /* Serve the /public dir */
 app.use(express.static(__dirname + '/public'));
 /*Read();
  */
-
 
 /* Write WebService*/
 app.get('/write', function(req, res) {
@@ -91,12 +90,12 @@ io.sockets.on('connection', function(socket) {
     Options.BaudRate = typeof Options.BaudRate !== 'undefined' ? Options.BaudRate : "9600"; // Set default BaudRate
     Options.StartChar = typeof Options.StartChar !== 'undefined' ? Options.StartChar : "{";
     Options.EndChar = typeof Options.EndChar !== 'undefined' ? Options.EndChar : "}";
-   /* 
+
    var serialPort = new SerialPort(Options.Port, {
         baudrate: Options.BaudRate,
 
     }, false);
-*/
+
     serialPort.open(function() {
         serialPort.on('data', function(data) {
             receivedData += data.toString();

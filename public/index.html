@@ -15,17 +15,19 @@
             socket.on('connection', function(data) {
                 console.log(data);
                 console.log('socket  created');
+                document.getElementById('Status').innerHTML = "Connected";
+
             });
             socket.on('update', function(data) {
                 console.log(data);
-                document.getElementById("ReadVal").value = data.slice(data.indexOf('{'), data.indexOf('}'));;
-                console.log('Update Recived to Client');
+                document.getElementById("ReadVal").value = data
+                console.log('update Recived to Client');
             });
             socket.on('UpdateClient', function(data) {
                 console.log(data);
                 document.getElementById("ReadVal").value = data
                 //.slice(data.indexOf('{'),data.indexOf('}'));
-                console.log('Update Recieved to Client');
+                console.log('UpdateClient Recieved to Client');
             });
 
             socket.on('onconnection', function(value) {
@@ -38,29 +40,30 @@
                 });
             });
 
-            
+
             window.addEventListener('deviceorientation', function(event) {
                 var alpha = Math.round(event.alpha * 100) / 100;
                 var beta = Math.round(event.beta * 100) / 100;
                 var gamma = Math.round(event.gamma * 100) / 100;
-            if (beta>10 && gamma>10)
-            {   var command="Manual" + beta;
+                if (beta > 10 && gamma > 10) {
+                    var command = "Manual" + beta;
 
-                SerialWriteActivity(command);
-            }
+                    SerialWriteActivity(command);
+                }
                 document.getElementById("alpha").innerHTML = alpha;
                 document.getElementById("beta").innerHTML = beta;
                 document.getElementById("gamma").innerHTML = gamma;
-            
+
             }, false);
             var multiplier = 3;
 
-            function map2 ( value,  from1,  to1,  from2,  to2) {
-return (value - from1) / (to1 - from1) * (to2 - from2) + from2;            }
-            function map(value,max,minrange,maxrange) {
-    return Math.round(((max-value)/(max))*(maxrange-minrange))+minrange;
-}
+            function map2(value, from1, to1, from2, to2) {
+                return (value - from1) / (to1 - from1) * (to2 - from2) + from2;
+            }
 
+            function map(value, max, minrange, maxrange) {
+                return Math.round(((max - value) / (max)) * (maxrange - minrange)) + minrange;
+            }
         </script>
         <script src="/bower_components/angular-bootstrap/ui-bootstrap.min.js"></script>
         <link href="/bower_components/bootstrap/dist/css/bootstrap.min.css"
@@ -86,6 +89,7 @@ return (value - from1) / (to1 - from1) * (to2 - from2) + from2;            }
             <button class="btn btn-primary btn-lg btn-block">Send</button>
             <input class="input-lg" type="text" id="ReadVal" placeholder="Waiting on Serial Read"
             class="form-control input-lg" />
+            <div id="Status">Offline</div>
             <table class="table">
                 <thread>
                     <tr>
@@ -103,7 +107,28 @@ return (value - from1) / (to1 - from1) * (to2 - from2) + from2;            }
                             <div id="gamma">g</div>
                         </th>
                     </tr>
-                 
+                    </tr>
+                </thread>
+            </table>
+        </form>
+        <form ng-controller="UpdateScreen">
+            <table class="table">
+                <thread>
+                    <tr>
+                        <legend>Raw {{'Values'}} {{'From IMU '}}</legend>
+                        <th>
+                            <b1>z [0, 360).</b1>
+                            <div id="alphaAngular">{{alphaAngular}}</div>
+                        </th>
+                        <th>
+                            <b1>x [-180, 180).</b1>
+                            <div id="betaAngular">{{betaAngular}}</div>
+                        </th>
+                        <th>
+                            <b1>y [-90, 90).</b1>
+                            <div id="gammaAngular">{{gammaAngular}}</div>
+                        </th>
+                    </tr>
                     </tr>
                 </thread>
             </table>

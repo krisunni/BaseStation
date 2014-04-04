@@ -1,11 +1,7 @@
 /*Contoller for BaseStation*/
 
-var BaseStationModule = angular.module('BaseStation', []);
-BaseStationModule.filter('alphaAngular', function() {
-    return function(name) {
-        return 'This block works';
-    };
-});
+
+angular.module('Command.Write', []);
 
 function UserController($scope, $http) {
     $scope.user = {};
@@ -38,36 +34,18 @@ function UserOptions($scope) {
     };
 
     // $scope.activities = ["Manual 5", "Manual 50", "Manual 100", "Manual 150", "Hello", "ON", "OFF" ];
-    $scope.activities = ["Go 255 ", "Turn 255", "Go -255", "Turn -255", "Drive 0 0"];
+    $scope.activities = ["Drive 100 100 ", "Turn 255 ", "Drive 255"];
 
 }
 
-function UpdateScreen($scope) {
-    window.addEventListener('deviceorientation', function(event) {
-        var alpha = Math.round(event.alpha * 100) / 100;
-        var beta = Math.round(event.beta * 100) / 100;
-        var gamma = Math.round(event.gamma * 100) / 100;
-        /* if (beta > 10 && gamma > 10) {
-     $http({
-                method: 'GET',
-                url: 'http://pi.ku:3000/write?command=' + 'Drive' + beta + gamma
-            });
-        }*/
-        $scope.alphaAngular = alpha;
-        $scope.betaAngular = beta;
-        $scope.gammaAngular = gamma;
-        console.log(alpha);
-    }, false);
-    var multiplier = 3;
-
-    function map2(value, from1, to1, from2, to2) {
-        return (value - from1) / (to1 - from1) * (to2 - from2) + from2;
-    }
-
-    function map(value, max, minrange, maxrange) {
-        return Math.round(((max - value) / (max)) * (maxrange - minrange)) + minrange;
-    }
+function ArduinoRead(socket) {
+    socket.on('message', function(message) {
+        $scope.view = message.toString();
+        console.log(message.toString());
+    });
 }
+
+angular.module('BaseStation', []);
 
 
 /*angular.module('BaseStation', [
